@@ -1,0 +1,39 @@
+<head>
+  <title>meet-skillshare</title>
+</head>
+
+<body>
+  {{> loginButtons}}
+  {{#if currentUser}}
+    {{> userInfo}}
+    {{> frequencyForm}}
+    {{> pastMatches}}
+  {{else}}
+    <h1>Log in to Meet other Skillsharers</h1>
+  {{/if}}
+
+</body>
+
+<template name="userInfo">
+  <h1>Welcome {{user.given_name}}!</h1>
+  <img src="{{user.picture}}">
+</template>
+
+<template name="frequencyForm">
+  <h2>How often would you like to meet?</h2>
+  <form>
+    <select name="frequency" class="frequency-form">
+      {{#each frequencyOptions}}
+      <option value="{{value}}" {{selected}}>{{text}}</option>
+      {{/each}}
+    </select>
+  </form>
+</template>
+
+<template name="pastMatches">
+  <h2>Matches</h2>
+  {{#each matches}}
+    <img src="{{otherUser.picture}}">
+    {{otherUser.given_name}}
+  {{/each}}
+</template>
