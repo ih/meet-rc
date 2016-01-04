@@ -11,7 +11,7 @@ Meteor.publish('userData', function () {
 
 Meteor.publishComposite('userMatches', {
   find: function () {
-    return Matches.find({$or: [{userAId: this.userId}, {userBId: this.userId}]});
+    return Matches.find({$or: [{userAId: this.userId}, {userBId: this.userId}]}, {sort: {createdAt: -1}});
   },
   children: [{
     find: function (match) {
@@ -25,7 +25,7 @@ SyncedCron.add({
   name: 'Match and update',
   schedule: function(parser) {
     // parser is a later.parse object
-    return parser.text('every 10 seconds');
+    return parser.text('every 1 day');
   },
   job: function() {
     createMatches();
@@ -50,7 +50,7 @@ function updateAvailability() {
     if (lastMatch) {
       var millisecondsSinceMatchMade = (new Date()) - lastMatch.createdAt;
       console.log(lastMatch);
-      var userFrequencyInMilliseconds = user.profile.frequency * 60 * 1000;
+      var userFrequencyInMilliseconds = user.profile.frequency * 60 * 60 * 24 * 1000;
       availability = millisecondsSinceMatchMade > userFrequencyInMilliseconds;
     }
     console.log(`${user.profile.name} has availability ${availability}: ${millisecondsSinceMatchMade} ${userFrequencyInMilliseconds}`);
@@ -82,12 +82,12 @@ function createMatches() {
     // send match email
 
     Email.send({
-      from: 'hello@skillshare.com',
+      from: 'irvin@skillshare.com',
       to: [userA.profile.email, userB.profile.email],
       subject: `You've been matched!`,
       text: `
-      Hello!
-        ${userA.profile.name} and ${userB.profile.name}
+      Hello ${userA.profile.name} and ${userB.profile.name}!
+        Feel free to schedule a time to meet up!
       `
     });
   }

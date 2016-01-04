@@ -17,11 +17,17 @@ Template.frequencyForm.helpers({
       value: 0,
       text: 'never'
     }, {
-      value: 1,
-      text: 'daily'
+      value: 3,
+      text: '~2 times a week'
     }, {
       value: 7,
       text: 'weekly'
+    }, {
+      value: 14,
+      text: 'once every two weeks'
+    }, {
+      value: 30,
+      text: '~once a month'
     }];
 
     // set which one is selected
@@ -50,7 +56,10 @@ Template.pastMatches.helpers({
     var userMatches =  Matches.find().fetch();
     _.each(userMatches, (match) => {
       var otherUserId = match.userAId === Meteor.userId() ? match.userBId : match.userAId;
-      match.otherUser = Meteor.users.findOne(otherUserId).services.google;
+      match.otherUser = Meteor.users.findOne(otherUserId);
+      if (match.otherUser) {
+        match.otherUser = match.otherUser.services.google;
+      }
     });
     return userMatches;
   },
@@ -58,10 +67,10 @@ Template.pastMatches.helpers({
     var userA = Meteor.users.findOne(this.userAId);
     var userB = Meteor.users.findOne(this.userBId);
     var otherUserId = (Meteor.userId() === this.userAId ? this.userBId : this.userAId);
-    console.log('this user user is ' + Meteor.userId());
-    console.log('the other user is ' + otherUserId);
-    console.log('a user is ' + this.userAId);
-    console.log('b user is ' + this.userBId);
     return Meteor.users.findOne(otherUserId);
+  },
+  createdAt: () => {
+    return (new Date(this.createdAt)).toString();
   }
+
 });

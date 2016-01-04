@@ -3,15 +3,16 @@
 </head>
 
 <body>
-  {{> loginButtons}}
-  {{#if currentUser}}
-    {{> userInfo}}
-    {{> frequencyForm}}
-    {{> pastMatches}}
-  {{else}}
-    <h1>Log in to Meet other Skillsharers</h1>
-  {{/if}}
-
+  <div class="container">
+    <div class="login-buttons">
+      {{> loginButtons}}
+    </div>
+    {{#if currentUser}}
+      {{> userInfo}}
+      {{> frequencyForm}}
+      {{> pastMatches}}
+    {{/if}}
+  </div>
 </body>
 
 <template name="userInfo">
@@ -21,8 +22,8 @@
 
 <template name="frequencyForm">
   <h2>How often would you like to meet?</h2>
-  <form>
-    <select name="frequency" class="frequency-form">
+  <form class="frequency-form">
+    <select name="frequency" class="frequency-input form-control">
       {{#each frequencyOptions}}
       <option value="{{value}}" {{selected}}>{{text}}</option>
       {{/each}}
@@ -31,9 +32,14 @@
 </template>
 
 <template name="pastMatches">
+  <div class="matches">
   <h2>Matches</h2>
   {{#each matches}}
-    <img src="{{otherUser.picture}}">
-    {{otherUser.given_name}}
+    <div class="match">
+      <img src="{{otherUser.picture}}">
+      {{createdAt}}
+      {{otherUser.given_name}}
+    </div>
   {{/each}}
+  </div>
 </template>
