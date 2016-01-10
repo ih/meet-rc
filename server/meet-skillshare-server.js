@@ -25,11 +25,11 @@ SyncedCron.add({
   name: 'Match and update',
   schedule: function(parser) {
     // parser is a later.parse object
-    return parser.text('every 1 day');
+    return parser.text('every 30 minutes');
   },
   job: function() {
-    createMatches();
     updateAvailability();
+    createMatches();
   }
 });
 
@@ -50,7 +50,7 @@ function updateAvailability() {
     if (lastMatch) {
       var millisecondsSinceMatchMade = (new Date()) - lastMatch.createdAt;
       console.log(lastMatch);
-      var userFrequencyInMilliseconds = user.profile.frequency * 60 * 60 * 24 * 1000;
+      var userFrequencyInMilliseconds = user.profile.frequency * 30 * 60 * 1000;
       availability = millisecondsSinceMatchMade > userFrequencyInMilliseconds;
     }
     console.log(`${user.profile.name} has availability ${availability}: ${millisecondsSinceMatchMade} ${userFrequencyInMilliseconds}`);

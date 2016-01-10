@@ -17,17 +17,17 @@ Template.frequencyForm.helpers({
       value: 0,
       text: 'never'
     }, {
-      value: 3,
-      text: '~2 times a week'
-    }, {
       value: 7,
       text: 'weekly'
     }, {
       value: 14,
       text: 'once every two weeks'
     }, {
-      value: 30,
-      text: '~once a month'
+      value: 21,
+      text: 'once every three weeks'
+    }, {
+      value: 28,
+      text: 'once every four weeks'
     }];
 
     // set which one is selected
