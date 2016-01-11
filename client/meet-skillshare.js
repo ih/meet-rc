@@ -33,7 +33,7 @@ Template.frequencyForm.helpers({
   frequencyOptions: () => {
     var options = [{
       value: 0,
-      text: 'never'
+      text: 'not now'
     }, {
       value: 7,
       text: 'weekly'

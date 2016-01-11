@@ -1,5 +1,14 @@
 var Matches = new Mongo.Collection('matches');
 
+Accounts.validateNewUser(function (user) {
+
+  if (/@skillshare.com\s*$/.test(user.services.google.email)) {
+    return true;
+  } else {
+    throw new Meteor.Error(403, "You must be logged into Google with your Skillshare account.");
+  }
+});
+
 Meteor.publish('userData', function () {
   if (this.userId) {
     return Meteor.users.find({_id: this.userId},
@@ -66,7 +75,7 @@ function updateAvailability() {
     if (lastMatch) {
       var millisecondsSinceMatchMade = (new Date()) - lastMatch.createdAt;
       console.log(lastMatch);
-      var userFrequencyInMilliseconds = user.profile.frequency * 60 * 1000;
+      var userFrequencyInMilliseconds = user.profile.frequency * 24 * 60 * 60 * 1000;
       availability = millisecondsSinceMatchMade > userFrequencyInMilliseconds;
     }
     console.log(`${user.profile.name} has availability ${availability}: ${millisecondsSinceMatchMade} ${userFrequencyInMilliseconds}`);
