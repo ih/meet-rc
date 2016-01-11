@@ -8,12 +8,21 @@
       {{> loginButtons}}
     </div>
     {{#if currentUser}}
+      {{#if isAdmin}}
+      {{> adminControls}}
+      {{/if}}
       {{> userInfo}}
       {{> frequencyForm}}
-      {{> pastMatches}}
+      {{> matches}}
     {{/if}}
   </div>
 </body>
+
+<template name="adminControls">
+  <div class="admin-controls">
+    <button class="btn btn-primary run-matches">Run Matches</button>
+  </div>
+</template>
 
 <template name="userInfo">
   <h1>Welcome {{user.given_name}}!</h1>
@@ -31,15 +40,17 @@
   </form>
 </template>
 
-<template name="pastMatches">
-  <div class="matches">
-  <h2>Matches</h2>
-  {{#each matches}}
+<template name="matches">
+  {{#if matches}}
+  <div class="pastMatches">
+    <h2>Matches</h2>
+    {{#each matches}}
     <div class="match">
       <img src="{{otherUser.picture}}">
-      {{createdAt}}
+      {{readableDate createdAt}}
       {{otherUser.given_name}}
     </div>
-  {{/each}}
+    {{/each}}
   </div>
+  {{/if}}
 </template>

@@ -3,6 +3,24 @@ var Matches = new Mongo.Collection('matches');
 Meteor.subscribe('userData');
 Meteor.subscribe('userMatches');
 
+Template.body.helpers({
+  isAdmin: () => {
+    return Meteor.user().services && (Meteor.user().services.google.email === 'irvin@skillshare.com');
+  }
+});
+
+Template.adminControls.events({
+  'click .run-matches': (event) => {
+    Meteor.call('runMatches', (error, result) => {
+      if (error) {
+        console.error('problem running matches: ' + JSON.stringify(error));
+      } else {
+        console.log('Run matches completed with ' + JSON.stringify(result) + ' matches made.');
+      }
+    });
+  }
+});
+
 Template.userInfo.helpers({
   user: () => {
     if (Meteor.user().services) {
@@ -50,7 +68,7 @@ Template.frequencyForm.events({
   }
 });
 
-Template.pastMatches.helpers({
+Template.matches.helpers({
   matches: () => {
     // b/c of the subscription the only matches are ones the user is a part of
     var userMatches =  Matches.find().fetch();
@@ -69,8 +87,10 @@ Template.pastMatches.helpers({
     var otherUserId = (Meteor.userId() === this.userAId ? this.userBId : this.userAId);
     return Meteor.users.findOne(otherUserId);
   },
-  createdAt: () => {
-    return (new Date(this.createdAt)).toString();
+  readableDate: (createdAt) => {
+    console.log(createdAt);
+    console.log((new Date(createdAt)).toString());
+    return moment((new Date(createdAt))).format("dddd, MMMM Do YYYY");
   }
 
 });

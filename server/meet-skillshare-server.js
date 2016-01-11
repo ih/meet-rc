@@ -21,6 +21,19 @@ Meteor.publishComposite('userMatches', {
   }]
 });
 
+Meteor.methods({
+  runMatches: () => {
+    if (isAdmin()) {
+      console.log('running matches');
+      updateAvailability();
+      return createMatches();
+    } else {
+      console.log('a non-admin attempted to run the matches');
+      throw new Meteor.Error(403, 'a non-admin attempted to run the matches');
+    }
+  }
+});
+
 SyncedCron.add({
   name: 'Match and update',
   schedule: function(parser) {
@@ -33,6 +46,9 @@ SyncedCron.add({
   }
 });
 
+function isAdmin() {
+  return Meteor.user().services.google.email === 'irvin@skillshare.com';
+}
 
 function updateAvailability() {
   Meteor.users.find({'profile.frequency': 0}).forEach((user) => {
@@ -50,7 +66,7 @@ function updateAvailability() {
     if (lastMatch) {
       var millisecondsSinceMatchMade = (new Date()) - lastMatch.createdAt;
       console.log(lastMatch);
-      var userFrequencyInMilliseconds = user.profile.frequency * 10 * 60 * 1000;
+      var userFrequencyInMilliseconds = user.profile.frequency * 60 * 1000;
       availability = millisecondsSinceMatchMade > userFrequencyInMilliseconds;
     }
     console.log(`${user.profile.name} has availability ${availability}: ${millisecondsSinceMatchMade} ${userFrequencyInMilliseconds}`);
@@ -63,6 +79,7 @@ function createMatches() {
   console.log('running create matches');
   // in the future do a random sort
   var availableUsers = _.shuffle(Meteor.users.find({'profile.available': true}).fetch());
+  var matchCount = 0;
   console.log(availableUsers.length);
   for (var i = 0; i <= (availableUsers.length - 2); i += 2) {
     var currentTime = Date.now();
@@ -78,7 +95,7 @@ function createMatches() {
       met: false,
       updatedAt: currentTime
     });
-
+    matchCount += 1;
     // send match email
 
     Email.send({
@@ -91,8 +108,8 @@ function createMatches() {
       `
     });
   }
-
+  return matchCount;
 
 }
 
-SyncedCron.start();
+//SyncedCron.start();
