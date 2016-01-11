@@ -100,7 +100,7 @@ function createMatches() {
 
     Email.send({
       from: 'irvin@skillshare.com',
-      to: [userA.profile.email, userB.profile.email],
+      to: [userA.services.google.email, userB.services.google.email],
       subject: `You've been matched!`,
       text: `
       Hello ${userA.profile.name} and ${userB.profile.name}!
