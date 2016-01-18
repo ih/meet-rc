@@ -1,7 +1,6 @@
 var Matches = new Mongo.Collection('matches');
 
 Accounts.validateNewUser(function (user) {
-
   if (/@skillshare.com\s*$/.test(user.services.google.email)) {
     return true;
   } else {
@@ -40,6 +39,14 @@ Meteor.methods({
       console.log('a non-admin attempted to run the matches');
       throw new Meteor.Error(403, 'a non-admin attempted to run the matches');
     }
+  },
+  updateAvailability: () => {
+    if (isAdmin()) {
+      return updateAvailability();
+    } else {
+      console.log('a non-admin attempted to update the availability');
+      throw new Meteor.Error(403, 'a non-admin attempted to update the availability');
+    }
   }
 });
 
@@ -60,6 +67,7 @@ function isAdmin() {
 }
 
 function updateAvailability() {
+  var availableUserCount = 0;
   Meteor.users.find({'profile.frequency': 0}).forEach((user) => {
     Meteor.users.update({_id: user._id}, {$set: {'profile.available': false}});
   });
@@ -81,7 +89,12 @@ function updateAvailability() {
     console.log(`${user.profile.name} has availability ${availability}: ${millisecondsSinceMatchMade} ${userFrequencyInMilliseconds}`);
     Meteor.users.update(
       {_id: user._id}, {$set: {'profile.available': availability}});
+    if (availability) {
+      availableUserCount += 1;
+    }
   });
+
+  return availableUserCount;
 }
 
 function createMatches() {
@@ -110,10 +123,11 @@ function createMatches() {
     Email.send({
       from: 'irvin@skillshare.com',
       to: [userA.services.google.email, userB.services.google.email],
-      subject: `You've been matched!`,
+      subject: `Meet Skillshare`,
       text: `
-      Hello ${userA.profile.name} and ${userB.profile.name}!
-        Feel free to schedule a time to meet up!
+      Hello ${userA.services.google.given_name} (${userA.services.google.email}) and ${userB.services.google.given_name} (${userB.services.google.email}),
+
+      Schedule a time to meet up this week!
       `
     });
   }

@@ -18,6 +18,15 @@ Template.adminControls.events({
         console.log('Run matches completed with ' + JSON.stringify(result) + ' matches made.');
       }
     });
+  },
+  'click .update-availability': (event) => {
+    Meteor.call('updateAvailability', (error, result) => {
+      if (error) {
+        console.error('problem updating availability: ' + JSON.stringify(error));
+      } else {
+        console.log('Updated availability with ' + JSON.stringify(result) + ' available users.');
+      }
+    });
   }
 });
 
