@@ -83,7 +83,7 @@ function updateAvailability() {
     if (lastMatch) {
       var millisecondsSinceMatchMade = (new Date()) - lastMatch.createdAt;
       console.log(lastMatch);
-      var userFrequencyInMilliseconds = user.profile.frequency * 24 * 60 * 60 * 1000;
+      var userFrequencyInMilliseconds = (user.profile.frequency * 24 * 60 * 60 * 1000) - (24 * 60 * 60 * 1000);
       availability = millisecondsSinceMatchMade > userFrequencyInMilliseconds;
     }
     console.log(`${user.profile.name} has availability ${availability}: ${millisecondsSinceMatchMade} ${userFrequencyInMilliseconds}`);
