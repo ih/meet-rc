@@ -120,6 +120,8 @@ function createMatches() {
     matchCount += 1;
     // send match email
 
+    process.env.MAIL_URL = 'smtp://postmaster@sandboxd3edc6eb8b664402b0bbfc65cdd8ee19.mailgun.org:30c0d25577960469d4cf79f674344341@smtp.mailgun.org:587';
+
     Email.send({
       from: 'irvin@skillshare.com',
       to: [userA.services.google.email, userB.services.google.email],
